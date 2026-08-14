@@ -226,7 +226,10 @@ export function HennaBookingApp() {
 
   return (
     <main className="site-shell">
+      <div className="ambient-pattern" aria-hidden="true" />
       <section className="brand-band" aria-labelledby="brand-title">
+        <div className="henna-lace henna-lace--top" aria-hidden="true" />
+        <div className="henna-lace henna-lace--bottom" aria-hidden="true" />
         <div className="brand-copy">
           <p className="eyebrow">Henné traditionnel dans le 06</p>
           <h1 id="brand-title">henne.06</h1>
@@ -234,19 +237,36 @@ export function HennaBookingApp() {
             Modèles inspirés des moodboards Pinterest, dessinés ici en version
             originale pour mariages, fêtes, Eid, soirées et petits rendez-vous.
           </p>
+          <div className="hero-actions" aria-label="Points forts">
+            <a className="primary-link" href="#calendar-title">
+              Réserver
+            </a>
+            <span>12 modèles</span>
+            <span>Créneaux en direct</span>
+          </div>
         </div>
-        <Image
-          className="brand-image"
-          src="/og.png"
-          alt="Mains avec henné, cônes et calendrier henne.06"
-          width={1600}
-          height={900}
-          priority
-          sizes="(max-width: 980px) 100vw, 52vw"
-        />
+        <div className="brand-visual">
+          <span className="visual-spark visual-spark--one" aria-hidden="true" />
+          <span className="visual-spark visual-spark--two" aria-hidden="true" />
+          <Image
+            className="brand-image"
+            src="/og.png"
+            alt="Mains avec henné, cônes et calendrier henne.06"
+            width={1600}
+            height={900}
+            priority
+            sizes="(max-width: 980px) 100vw, 52vw"
+          />
+          <div className="visual-caption" aria-hidden="true">
+            <span>Motifs fins</span>
+            <span>Mariage</span>
+            <span>Fêtes</span>
+          </div>
+        </div>
       </section>
 
       <section className="model-section" aria-labelledby="models-title">
+        <div className="section-ornament" aria-hidden="true" />
         <div className="section-heading">
           <p className="eyebrow">Moodboard henné</p>
           <h2 id="models-title">Choisir le modèle</h2>
@@ -279,6 +299,7 @@ export function HennaBookingApp() {
       </section>
 
       <section className="booking-section" aria-labelledby="calendar-title">
+        <div className="section-ornament section-ornament--right" aria-hidden="true" />
         <div className="section-heading calendar-heading">
           <div>
             <p className="eyebrow">Réservation</p>
