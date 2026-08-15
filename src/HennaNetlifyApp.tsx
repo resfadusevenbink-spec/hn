@@ -17,8 +17,6 @@ type Feedback = {
 const weekdays = ["Lun", "Mar", "Mer", "Jeu", "Ven", "Sam", "Dim"];
 const peopleOptions = ["1", "2", "3", "4", "5+"];
 const handOptions = ["1 main", "2 mains", "3-4 mains", "5-6 mains", "7+ mains"];
-const occasionOptions = ["Mariage", "Aid", "Soirée", "Événement", "Simple plaisir", "Autre"];
-const placementOptions = ["Mains", "Pieds", "Mains et pieds", "Bras", "À voir ensemble"];
 const cancellationPolicy = "Annulation ou changement possible en prévenant au moins 24h avant.";
 const storageKey = "henne-06-netlify-bookings";
 
@@ -97,8 +95,6 @@ export function HennaNetlifyApp() {
   const [contact, setContact] = useState("");
   const [peopleCount, setPeopleCount] = useState(peopleOptions[0]);
   const [handCount, setHandCount] = useState(handOptions[1]);
-  const [occasion, setOccasion] = useState(occasionOptions[0]);
-  const [placement, setPlacement] = useState(placementOptions[0]);
   const [notes, setNotes] = useState("");
   const [cancellationAccepted, setCancellationAccepted] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
@@ -178,8 +174,6 @@ export function HennaNetlifyApp() {
       time: activeTime,
       nombre_personnes: peopleCount,
       nombre_mains: handCount,
-      occasion,
-      zone_henne: placement,
       regles_annulation: cancellationAccepted ? "acceptées" : "non acceptées",
       condition_annulation: cancellationPolicy,
       notes,
@@ -462,38 +456,6 @@ export function HennaNetlifyApp() {
                     onChange={(event) => setHandCount(event.target.value)}
                   >
                     {handOptions.map((option) => (
-                      <option key={option} value={option}>
-                        {option}
-                      </option>
-                    ))}
-                  </select>
-                </label>
-              </div>
-              <div className="form-row">
-                <label>
-                  Occasion
-                  <select
-                    name="occasion"
-                    required
-                    value={occasion}
-                    onChange={(event) => setOccasion(event.target.value)}
-                  >
-                    {occasionOptions.map((option) => (
-                      <option key={option} value={option}>
-                        {option}
-                      </option>
-                    ))}
-                  </select>
-                </label>
-                <label>
-                  Zone souhaitée
-                  <select
-                    name="zone_henne"
-                    required
-                    value={placement}
-                    onChange={(event) => setPlacement(event.target.value)}
-                  >
-                    {placementOptions.map((option) => (
                       <option key={option} value={option}>
                         {option}
                       </option>
