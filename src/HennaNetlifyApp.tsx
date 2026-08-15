@@ -7,6 +7,11 @@ type LocalBooking = {
   modelName: string;
   date: string;
   time: string;
+  customerName?: string;
+  contact?: string;
+  peopleCount?: string;
+  handCount?: string;
+  notes?: string;
 };
 
 type Feedback = {
@@ -63,6 +68,18 @@ function modelById(modelId: string): HennaModel {
 
 function encodeFormData(data: Record<string, string>) {
   return new URLSearchParams(data).toString();
+}
+
+async function submitNetlifyBooking(data: Record<string, string>) {
+  const response = await fetch("/", {
+    method: "POST",
+    headers: { "Content-Type": "application/x-www-form-urlencoded" },
+    body: encodeFormData(data),
+  });
+
+  if (!response.ok && !isLocalPreview()) {
+    throw new Error("Netlify form submission failed");
+  }
 }
 
 function isLocalPreview() {
@@ -129,6 +146,7 @@ export function HennaNetlifyApp() {
 
   const selectedDayBookings = bookingsByDate.get(selectedDate) ?? [];
   const bookedTimes = new Set(selectedDayBookings.map((booking) => booking.time));
+  const bookingByTime = new Map(selectedDayBookings.map((booking) => [booking.time, booking]));
   const nextOpenSlot = BOOKING_TIMES.find((time) => !bookedTimes.has(time));
   const activeTime = bookedTimes.has(selectedTime) && nextOpenSlot ? nextOpenSlot : selectedTime;
   const activeSlotIsBooked = bookedTimes.has(activeTime);
@@ -160,6 +178,11 @@ export function HennaNetlifyApp() {
     });
   }
 
+  function persistBookings(nextBookings: LocalBooking[]) {
+    setBookings(nextBookings);
+    window.localStorage.setItem(storageKey, JSON.stringify(nextBookings));
+  }
+
   async function handleSubmit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
 
@@ -174,8 +197,11 @@ export function HennaNetlifyApp() {
     setIsSubmitting(true);
     setFeedback({ tone: "idle", message: "" });
 
+    const bookingId = `${Date.now()}`;
     const formPayload = {
       "form-name": "booking",
+      type_demande: "reservation",
+      booking_id: bookingId,
       name,
       contact,
       model: selectedModel.name,
@@ -187,26 +213,22 @@ export function HennaNetlifyApp() {
     };
 
     try {
-      const response = await fetch("/", {
-        method: "POST",
-        headers: { "Content-Type": "application/x-www-form-urlencoded" },
-        body: encodeFormData(formPayload),
-      });
-
-      if (!response.ok && !isLocalPreview()) {
-        throw new Error("Netlify form submission failed");
-      }
+      await submitNetlifyBooking(formPayload);
 
       const booking: LocalBooking = {
-        id: `${Date.now()}`,
+        id: bookingId,
         modelId: selectedModel.id,
         modelName: selectedModel.name,
         date: selectedDate,
         time: activeTime,
+        customerName: name,
+        contact,
+        peopleCount,
+        handCount,
+        notes,
       };
       const nextBookings = [...bookings, booking];
-      setBookings(nextBookings);
-      window.localStorage.setItem(storageKey, JSON.stringify(nextBookings));
+      persistBookings(nextBookings);
       setName("");
       setContact("");
       setNotes("");
@@ -220,6 +242,57 @@ export function HennaNetlifyApp() {
         message: isLocalPreview()
           ? "Le test local ne peut pas envoyer à Netlify. Essaie sur henne06.netlify.app."
           : "L'envoi n'a pas abouti. Vérifie Netlify Forms après le déploiement.",
+      });
+    } finally {
+      setIsSubmitting(false);
+    }
+  }
+
+  async function handleCancelBooking(booking: LocalBooking) {
+    const confirmed = window.confirm(
+      `Annuler le créneau du ${dateLabel(booking.date)} à ${booking.time} ?`,
+    );
+
+    if (!confirmed) {
+      return;
+    }
+
+    setIsSubmitting(true);
+    setFeedback({ tone: "idle", message: "" });
+
+    const formPayload = {
+      "form-name": "booking",
+      type_demande: "annulation",
+      booking_id: booking.id,
+      name: booking.customerName ?? "Annulation depuis le calendrier",
+      contact: booking.contact ?? "",
+      model: booking.modelName,
+      date: booking.date,
+      time: booking.time,
+      nombre_personnes: booking.peopleCount ?? "",
+      nombre_mains: booking.handCount ?? "",
+      notes: booking.notes
+        ? `ANNULATION - détail initial : ${booking.notes}`
+        : "ANNULATION demandée depuis le calendrier",
+    };
+
+    try {
+      await submitNetlifyBooking(formPayload);
+
+      const nextBookings = bookings.filter((savedBooking) => savedBooking.id !== booking.id);
+      persistBookings(nextBookings);
+      setSelectedDate(booking.date);
+      setSelectedTime(booking.time as BookingTime);
+      setFeedback({
+        tone: "success",
+        message: `Créneau annulé pour ${dateLabel(booking.date)} à ${booking.time}.`,
+      });
+    } catch {
+      setFeedback({
+        tone: "error",
+        message: isLocalPreview()
+          ? "Le test local ne peut pas envoyer l'annulation à Netlify. Essaie sur henne06.netlify.app."
+          : "L'annulation n'a pas abouti. Réessaie ou envoie un message directement.",
       });
     } finally {
       setIsSubmitting(false);
@@ -385,17 +458,26 @@ export function HennaNetlifyApp() {
 
             <div className="time-grid" aria-label="Choisir l'heure">
               {BOOKING_TIMES.map((time) => {
-                const isBooked = bookedTimes.has(time);
+                const bookingForTime = bookingByTime.get(time);
+                const isBooked = Boolean(bookingForTime);
                 return (
                   <button
                     key={time}
                     type="button"
-                    className={activeTime === time ? "time-button is-selected" : "time-button"}
-                    disabled={isBooked || selectedDate < todayKey}
-                    onClick={() => setSelectedTime(time)}
+                    className={[
+                      "time-button",
+                      activeTime === time ? "is-selected" : "",
+                      isBooked ? "is-booked" : "",
+                    ]
+                      .filter(Boolean)
+                      .join(" ")}
+                    disabled={isSubmitting || (selectedDate < todayKey && !bookingForTime)}
+                    onClick={() =>
+                      bookingForTime ? handleCancelBooking(bookingForTime) : setSelectedTime(time)
+                    }
                   >
                     {time}
-                    {isBooked ? <span>pris</span> : null}
+                    {bookingForTime ? <span>annuler</span> : null}
                   </button>
                 );
               })}
@@ -409,6 +491,8 @@ export function HennaNetlifyApp() {
               onSubmit={handleSubmit}
             >
               <input type="hidden" name="form-name" value="booking" />
+              <input type="hidden" name="type_demande" value="reservation" />
+              <input type="hidden" name="booking_id" value="" />
               <p className="hidden-field">
                 <label>
                   Ne pas remplir
