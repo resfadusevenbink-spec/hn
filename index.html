@@ -1,0 +1,32 @@
+<!doctype html>
+<html lang="fr">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta
+      name="description"
+      content="henne.06, réservation de henné traditionnel dans le 06 avec modèles et calendrier."
+    />
+    <meta property="og:title" content="henne.06 - Réservation henné" />
+    <meta
+      property="og:description"
+      content="Choisissez un modèle de henné traditionnel et envoyez votre demande de réservation."
+    />
+    <meta property="og:image" content="/og.png" />
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:image" content="/og.png" />
+    <title>henne.06 - Réservation henné</title>
+  </head>
+  <body>
+    <form name="booking" netlify netlify-honeypot="bot-field" hidden>
+      <input type="text" name="name" />
+      <input type="text" name="contact" />
+      <input type="text" name="model" />
+      <input type="text" name="date" />
+      <input type="text" name="time" />
+      <textarea name="notes"></textarea>
+    </form>
+    <div id="root"></div>
+    <script type="module" src="/src/main.tsx"></script>
+  </body>
+</html>
