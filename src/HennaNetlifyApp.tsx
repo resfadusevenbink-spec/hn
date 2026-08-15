@@ -75,6 +75,7 @@ function isLocalPreview() {
 export function HennaNetlifyApp() {
   const todayKey = toDateKey(new Date());
   const [hasEntered, setHasEntered] = useState(false);
+  const [isCalendarOpen, setIsCalendarOpen] = useState(false);
   const [monthCursor, setMonthCursor] = useState(() => startOfMonth(new Date()));
   const [selectedDate, setSelectedDate] = useState(todayKey);
   const [selectedTime, setSelectedTime] = useState<BookingTime>(BOOKING_TIMES[1]);
@@ -137,6 +138,21 @@ export function HennaNetlifyApp() {
     setMonthCursor(
       (current) => new Date(current.getFullYear(), current.getMonth() + direction, 1),
     );
+  }
+
+  function openCalendar(modelId: HennaModel["id"]) {
+    setSelectedModelId(modelId);
+    setIsCalendarOpen(true);
+    setFeedback({ tone: "idle", message: "" });
+    window.requestAnimationFrame(() => window.scrollTo({ top: 0, behavior: "smooth" }));
+  }
+
+  function returnToModels() {
+    setIsCalendarOpen(false);
+    setFeedback({ tone: "idle", message: "" });
+    window.requestAnimationFrame(() => {
+      document.getElementById("models")?.scrollIntoView({ behavior: "smooth" });
+    });
   }
 
   async function handleSubmit(event: FormEvent<HTMLFormElement>) {
@@ -229,72 +245,87 @@ export function HennaNetlifyApp() {
         </section>
       ) : null}
 
-      <section className="hero" aria-labelledby="hero-title">
-        <div className="hero-photo" aria-hidden="true">
-          <img src="/og.png" alt="" />
-        </div>
-        <div className="hero-copy">
-          <p className="kicker">henné traditionnel dans le 06</p>
-          <h1 id="hero-title" className="paint-title" aria-label="henne.06">
-            {"henne.06".split("").map((letter, index) => (
-              <span key={`${letter}-${index}`}>{letter}</span>
-            ))}
-          </h1>
-          <p className="hero-text">
-            Motifs fins, inspiration arabe, calendrier direct et demandes envoyées par
-            Netlify Forms.
-          </p>
-          <a className="spacebar-link" href="#reservation">
-            <span />
-            réserver un créneau
-          </a>
-        </div>
-        <div className="hero-side">
-          <span>mariage</span>
-          <span>eid</span>
-          <span>soirée</span>
-        </div>
-      </section>
+      {!isCalendarOpen ? (
+        <>
+          <section className="hero" aria-labelledby="hero-title">
+            <div className="hero-photo" aria-hidden="true">
+              <img src="/og.png" alt="" />
+            </div>
+            <div className="hero-copy">
+              <p className="kicker">henné traditionnel dans le 06</p>
+              <h1 id="hero-title" className="paint-title" aria-label="henne.06">
+                {"henne.06".split("").map((letter, index) => (
+                  <span key={`${letter}-${index}`}>{letter}</span>
+                ))}
+              </h1>
+              <p className="hero-text">
+                Scrolle les modèles, choisis ton dessin, puis ouvre le calendrier dédié à
+                ce modèle.
+              </p>
+              <a className="spacebar-link" href="#models">
+                <span />
+                voir les modèles
+              </a>
+            </div>
+            <div className="hero-side">
+              <span>mariage</span>
+              <span>eid</span>
+              <span>soirée</span>
+            </div>
+          </section>
 
-      <section className="models" aria-labelledby="models-title">
-        <div className="section-heading">
-          <p className="kicker">moodboard original</p>
-          <h2 id="models-title">Choisis ton dessin</h2>
-        </div>
-        <div className="model-track">
-          {HENNA_MODELS.map((model, index) => (
-            <button
-              type="button"
-              key={model.id}
-              className={`model-card model-card--${model.palette} ${
-                selectedModel.id === model.id ? "is-selected" : ""
-              }`}
-              onClick={() => setSelectedModelId(model.id)}
-              aria-pressed={selectedModel.id === model.id}
-              style={{ "--delay": `${index * 70}ms` } as React.CSSProperties}
-            >
-              <span className="model-index">{String(index + 1).padStart(2, "0")}</span>
-              <span className="model-art" aria-hidden="true">
-                <i />
-                <i />
-                <i />
-                <i />
-              </span>
-              <strong>{model.name}</strong>
-              <em>{model.tag}</em>
-              <small>{model.mood}</small>
+          <section className="models" id="models" aria-labelledby="models-title">
+            <div className="section-heading">
+              <p className="kicker">moodboard original</p>
+              <h2 id="models-title">Scrolle et choisis</h2>
+            </div>
+            <div className="model-list">
+              {HENNA_MODELS.map((model, index) => (
+                <button
+                  type="button"
+                  key={model.id}
+                  className={`model-card model-card--${model.palette}`}
+                  onClick={() => openCalendar(model.id)}
+                  style={{ "--delay": `${index * 70}ms` } as React.CSSProperties}
+                >
+                  <span className="model-index">{String(index + 1).padStart(2, "0")}</span>
+                  <span className="model-art" aria-hidden="true">
+                    <i />
+                    <i />
+                    <i />
+                    <i />
+                  </span>
+                  <span className="model-copy">
+                    <strong>{model.name}</strong>
+                    <em>{model.tag}</em>
+                    <small>{model.mood}</small>
+                  </span>
+                  <span className="model-cta">ouvrir le calendrier</span>
+                </button>
+              ))}
+            </div>
+          </section>
+        </>
+      ) : (
+        <section
+          className="reservation reservation--page"
+          id="reservation"
+          aria-labelledby="reservation-title"
+        >
+          <div className="reservation-top">
+            <button className="back-button" type="button" onClick={returnToModels}>
+              ← changer de modèle
             </button>
-          ))}
-        </div>
-      </section>
+            <div className="section-heading">
+              <p className="kicker">calendrier du modèle</p>
+              <h2 id="reservation-title">{selectedModel.name}</h2>
+            </div>
+            <p className="calendar-page-note">
+              Choisis le jour, l&apos;heure, puis complète les détails de ta demande.
+            </p>
+          </div>
 
-      <section className="reservation" id="reservation" aria-labelledby="reservation-title">
-        <div className="section-heading">
-          <p className="kicker">réservation netlify</p>
-          <h2 id="reservation-title">Calendrier vivant</h2>
-        </div>
-
-        <div className="reservation-grid">
+          <div className="reservation-grid">
           <div className="calendar-shell">
             <div className="month-bar">
               <button type="button" onClick={() => moveMonth(-1)} aria-label="Mois précédent">
@@ -510,7 +541,8 @@ export function HennaNetlifyApp() {
             ) : null}
           </aside>
         </div>
-      </section>
+        </section>
+      )}
     </main>
   );
 }

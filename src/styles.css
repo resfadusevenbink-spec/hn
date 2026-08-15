@@ -432,24 +432,22 @@ button {
   text-transform: uppercase;
 }
 
-.model-track {
+.model-list {
   display: grid;
-  grid-template-columns: repeat(6, minmax(210px, 1fr));
-  gap: 14px;
-  max-width: 1480px;
+  gap: 16px;
+  max-width: 1180px;
   margin: 0 auto;
-  overflow-x: auto;
-  padding: 4px 0 16px;
-  scrollbar-color: rgba(255, 247, 226, 0.5) transparent;
+  padding: 4px 0 24px;
 }
 
 .model-card {
   position: relative;
   display: grid;
-  grid-template-rows: auto 160px auto auto 1fr;
-  gap: 10px;
-  min-height: 390px;
-  padding: 16px;
+  grid-template-columns: 72px minmax(190px, 260px) minmax(0, 1fr) auto;
+  gap: 16px;
+  align-items: center;
+  min-height: 210px;
+  padding: 18px;
   overflow: hidden;
   text-align: left;
   background:
@@ -481,7 +479,7 @@ button {
 
 .model-card:hover,
 .model-card.is-selected {
-  transform: translateY(-6px);
+  transform: translateX(8px);
   border-color: rgba(255, 247, 226, 0.72);
 }
 
@@ -495,8 +493,9 @@ button {
   position: relative;
   z-index: 1;
   color: rgba(255, 247, 226, 0.58);
-  font-size: 0.78rem;
+  font-size: clamp(1.6rem, 4vw, 3.6rem);
   font-weight: 1000;
+  line-height: 0.9;
 }
 
 .model-art {
@@ -579,10 +578,19 @@ button {
   z-index: 1;
 }
 
+.model-copy {
+  position: relative;
+  z-index: 1;
+  display: grid;
+  gap: 10px;
+  min-width: 0;
+}
+
 .model-card strong {
-  font-size: 1.25rem;
+  font-size: clamp(1.8rem, 3.8vw, 3.8rem);
   font-weight: 1000;
-  line-height: 1.04;
+  line-height: 0.94;
+  text-transform: uppercase;
 }
 
 .model-card em {
@@ -600,13 +608,79 @@ button {
 
 .model-card small {
   color: rgba(255, 247, 226, 0.72);
-  font-size: 0.9rem;
+  max-width: 34rem;
+  font-size: 1rem;
   font-weight: 650;
   line-height: 1.38;
 }
 
+.model-cta {
+  position: relative;
+  z-index: 1;
+  justify-self: end;
+  min-width: 184px;
+  padding: 13px 14px;
+  border: 1px solid rgba(255, 247, 226, 0.42);
+  border-radius: 8px;
+  background:
+    linear-gradient(90deg, rgba(255, 106, 34, 0.92), rgba(255, 75, 121, 0.82), rgba(40, 102, 255, 0.92)),
+    var(--paper);
+  color: white;
+  font-size: 0.78rem;
+  font-weight: 1000;
+  letter-spacing: 0.04em;
+  text-align: center;
+  text-transform: uppercase;
+}
+
 .reservation {
   position: relative;
+}
+
+.reservation--page {
+  min-height: 100vh;
+  padding-top: clamp(24px, 4vw, 56px);
+}
+
+.reservation-top {
+  max-width: 1480px;
+  margin: 0 auto 24px;
+}
+
+.reservation-top .section-heading {
+  margin: 18px 0 10px;
+}
+
+.back-button {
+  min-height: 44px;
+  padding: 0 14px;
+  border: 1px solid rgba(255, 247, 226, 0.28);
+  border-radius: 8px;
+  background: rgba(255, 247, 226, 0.08);
+  color: var(--paper);
+  cursor: pointer;
+  font-weight: 950;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  transition:
+    transform 160ms ease,
+    border-color 160ms ease,
+    background 160ms ease;
+}
+
+.back-button:hover {
+  transform: translateY(-2px);
+  border-color: var(--gold);
+  background: rgba(255, 247, 226, 0.12);
+}
+
+.calendar-page-note {
+  max-width: 42rem;
+  margin: 0;
+  color: rgba(255, 247, 226, 0.74);
+  font-size: 1rem;
+  font-weight: 750;
+  line-height: 1.45;
 }
 
 .reservation::before {
@@ -1080,6 +1154,15 @@ button {
     display: none;
   }
 
+  .model-card {
+    grid-template-columns: 56px minmax(150px, 220px) minmax(0, 1fr);
+  }
+
+  .model-cta {
+    grid-column: 3;
+    justify-self: start;
+  }
+
   .reservation-grid {
     grid-template-columns: 1fr;
   }
@@ -1133,8 +1216,29 @@ button {
     padding-inline: 14px;
   }
 
-  .model-track {
-    grid-template-columns: repeat(6, minmax(220px, 76vw));
+  .model-card {
+    grid-template-columns: 1fr;
+    gap: 12px;
+    min-height: 0;
+    padding: 14px;
+  }
+
+  .model-card:hover {
+    transform: translateY(-4px);
+  }
+
+  .model-index {
+    font-size: 1rem;
+  }
+
+  .model-art {
+    height: 170px;
+  }
+
+  .model-cta {
+    grid-column: auto;
+    justify-self: stretch;
+    min-width: 0;
   }
 
   .calendar-grid {
