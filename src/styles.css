@@ -42,6 +42,7 @@ body {
 
 button,
 input,
+select,
 textarea {
   font: inherit;
 }
@@ -853,6 +854,12 @@ button {
   gap: 12px;
 }
 
+.form-row {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 10px;
+}
+
 .booking-form label {
   display: grid;
   gap: 7px;
@@ -864,6 +871,7 @@ button {
 }
 
 .booking-form input,
+.booking-form select,
 .booking-form textarea {
   width: 100%;
   border: 1px solid rgba(255, 247, 226, 0.22);
@@ -879,15 +887,76 @@ button {
 }
 
 .booking-form input:focus,
+.booking-form select:focus,
 .booking-form textarea:focus {
   border-color: var(--gold);
   background: rgba(255, 247, 226, 0.12);
   box-shadow: 0 0 0 3px rgba(255, 211, 106, 0.14);
 }
 
+.booking-form select {
+  appearance: none;
+  background:
+    linear-gradient(45deg, transparent 50%, var(--gold) 50%) right 16px center / 7px 7px no-repeat,
+    linear-gradient(135deg, var(--gold) 50%, transparent 50%) right 11px center / 7px 7px no-repeat,
+    rgba(255, 247, 226, 0.08);
+  padding-right: 34px;
+}
+
+.booking-form option {
+  background: var(--soft-ink);
+  color: var(--paper);
+}
+
 .booking-form textarea {
   min-height: 92px;
   resize: vertical;
+}
+
+.cancellation-box {
+  display: grid;
+  gap: 8px;
+  padding: 12px;
+  border: 1px solid rgba(255, 211, 106, 0.38);
+  border-radius: 8px;
+  background:
+    linear-gradient(135deg, rgba(255, 211, 106, 0.12), transparent 44%),
+    rgba(255, 247, 226, 0.045);
+}
+
+.cancellation-box strong {
+  color: var(--gold);
+  font-size: 0.82rem;
+  font-weight: 1000;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+}
+
+.cancellation-box p {
+  margin: 0;
+  color: rgba(255, 247, 226, 0.76);
+  font-size: 0.9rem;
+  font-weight: 700;
+  line-height: 1.38;
+}
+
+.booking-form .policy-check {
+  display: grid;
+  grid-template-columns: 20px 1fr;
+  gap: 10px;
+  align-items: start;
+  color: rgba(255, 247, 226, 0.86);
+  font-size: 0.78rem;
+  letter-spacing: 0;
+  line-height: 1.35;
+  text-transform: none;
+}
+
+.policy-check input {
+  width: 18px;
+  height: 18px;
+  margin: 1px 0 0;
+  accent-color: var(--orange);
 }
 
 .hidden-field {
@@ -1139,6 +1208,10 @@ button {
 
   .time-grid {
     grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .form-row {
+    grid-template-columns: 1fr;
   }
 }
 
