@@ -8,7 +8,8 @@ test("builds a Netlify-ready static app", async () => {
   assert.match(html, /<div id="root"><\/div>/);
   assert.match(html, /src="\/assets\/.*\.js"/);
   assert.match(html, /name="booking"/);
-  assert.match(html, /netlify/);
+  assert.match(html, /data-netlify="true"/);
+  assert.match(html, /name="bot-field"/);
   assert.match(html, /\/og\.png/);
 
   await stat(new URL("../dist/og.png", import.meta.url));

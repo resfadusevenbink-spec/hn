@@ -63,6 +63,10 @@ function encodeFormData(data: Record<string, string>) {
   return new URLSearchParams(data).toString();
 }
 
+function isLocalPreview() {
+  return ["localhost", "127.0.0.1", "0.0.0.0"].includes(window.location.hostname);
+}
+
 export function HennaNetlifyApp() {
   const todayKey = toDateKey(new Date());
   const [hasEntered, setHasEntered] = useState(false);
@@ -156,7 +160,7 @@ export function HennaNetlifyApp() {
         body: encodeFormData(formPayload),
       });
 
-      if (!response.ok && !window.location.hostname.includes("localhost")) {
+      if (!response.ok && !isLocalPreview()) {
         throw new Error("Netlify form submission failed");
       }
 
@@ -180,7 +184,9 @@ export function HennaNetlifyApp() {
     } catch {
       setFeedback({
         tone: "error",
-        message: "L'envoi n'a pas abouti. Vérifie Netlify Forms après le déploiement.",
+        message: isLocalPreview()
+          ? "Le test local ne peut pas envoyer à Netlify. Essaie sur henne06.netlify.app."
+          : "L'envoi n'a pas abouti. Vérifie Netlify Forms après le déploiement.",
       });
     } finally {
       setIsSubmitting(false);
