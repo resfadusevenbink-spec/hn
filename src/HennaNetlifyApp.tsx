@@ -259,8 +259,7 @@ export function HennaNetlifyApp() {
                 ))}
               </h1>
               <p className="hero-text">
-                Scrolle les modèles, choisis ton dessin, puis ouvre le calendrier dédié à
-                ce modèle.
+                Sélectionne ton dessin, puis ouvre le calendrier dédié à ce modèle.
               </p>
               <a className="spacebar-link" href="#models">
                 <span />
@@ -277,7 +276,7 @@ export function HennaNetlifyApp() {
           <section className="models" id="models" aria-labelledby="models-title">
             <div className="section-heading">
               <p className="kicker">moodboard original</p>
-              <h2 id="models-title">Scrolle et choisis</h2>
+              <h2 id="models-title">Modèles</h2>
             </div>
             <div className="model-list">
               {HENNA_MODELS.map((model, index) => (
