@@ -17,7 +17,6 @@ type Feedback = {
 const weekdays = ["Lun", "Mar", "Mer", "Jeu", "Ven", "Sam", "Dim"];
 const peopleOptions = ["1", "2", "3", "4", "5+"];
 const handOptions = ["1 main", "2 mains", "3-4 mains", "5-6 mains", "7+ mains"];
-const cancellationPolicy = "Annulation ou changement possible en prévenant au moins 24h avant.";
 const storageKey = "henne-06-netlify-bookings";
 
 function toDateKey(date: Date) {
@@ -96,7 +95,6 @@ export function HennaNetlifyApp() {
   const [peopleCount, setPeopleCount] = useState(peopleOptions[0]);
   const [handCount, setHandCount] = useState(handOptions[1]);
   const [notes, setNotes] = useState("");
-  const [cancellationAccepted, setCancellationAccepted] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [feedback, setFeedback] = useState<Feedback>({ tone: "idle", message: "" });
 
@@ -174,8 +172,6 @@ export function HennaNetlifyApp() {
       time: activeTime,
       nombre_personnes: peopleCount,
       nombre_mains: handCount,
-      regles_annulation: cancellationAccepted ? "acceptées" : "non acceptées",
-      condition_annulation: cancellationPolicy,
       notes,
     };
 
@@ -203,7 +199,6 @@ export function HennaNetlifyApp() {
       setName("");
       setContact("");
       setNotes("");
-      setCancellationAccepted(false);
       setFeedback({
         tone: "success",
         message: `Demande envoyée pour ${dateLabel(selectedDate)} à ${activeTime}.`,
@@ -407,7 +402,6 @@ export function HennaNetlifyApp() {
               <input type="hidden" name="model" value={selectedModel.name} />
               <input type="hidden" name="date" value={selectedDate} />
               <input type="hidden" name="time" value={activeTime} />
-              <input type="hidden" name="condition_annulation" value={cancellationPolicy} />
 
               <label>
                 Prénom
@@ -472,24 +466,6 @@ export function HennaNetlifyApp() {
                   onChange={(event) => setNotes(event.target.value)}
                 />
               </label>
-              <div className="cancellation-box">
-                <strong>Annulation</strong>
-                <p>
-                  {cancellationPolicy} En cas d&apos;absence sans message, un nouveau créneau
-                  peut être refusé.
-                </p>
-                <label className="policy-check">
-                  <input
-                    type="checkbox"
-                    name="regles_annulation"
-                    value="acceptées"
-                    required
-                    checked={cancellationAccepted}
-                    onChange={(event) => setCancellationAccepted(event.target.checked)}
-                  />
-                  <span>J&apos;ai lu les conditions d&apos;annulation et je confirme ma demande.</span>
-                </label>
-              </div>
 
               <button className="submit-button" type="submit" disabled={isSubmitting}>
                 {isSubmitting ? "envoi..." : "envoyer la demande"}

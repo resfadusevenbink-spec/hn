@@ -12,7 +12,6 @@ test("builds a Netlify-ready static app", async () => {
   assert.match(html, /name="bot-field"/);
   assert.match(html, /name="nombre_personnes"/);
   assert.match(html, /name="nombre_mains"/);
-  assert.match(html, /name="regles_annulation"/);
   assert.match(html, /\/og\.png/);
 
   await stat(new URL("../dist/og.png", import.meta.url));

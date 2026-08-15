@@ -987,52 +987,6 @@ button {
   resize: vertical;
 }
 
-.cancellation-box {
-  display: grid;
-  gap: 8px;
-  padding: 12px;
-  border: 1px solid rgba(255, 211, 106, 0.38);
-  border-radius: 8px;
-  background:
-    linear-gradient(135deg, rgba(255, 211, 106, 0.12), transparent 44%),
-    rgba(255, 247, 226, 0.045);
-}
-
-.cancellation-box strong {
-  color: var(--gold);
-  font-size: 0.82rem;
-  font-weight: 1000;
-  letter-spacing: 0.12em;
-  text-transform: uppercase;
-}
-
-.cancellation-box p {
-  margin: 0;
-  color: rgba(255, 247, 226, 0.76);
-  font-size: 0.9rem;
-  font-weight: 700;
-  line-height: 1.38;
-}
-
-.booking-form .policy-check {
-  display: grid;
-  grid-template-columns: 20px 1fr;
-  gap: 10px;
-  align-items: start;
-  color: rgba(255, 247, 226, 0.86);
-  font-size: 0.78rem;
-  letter-spacing: 0;
-  line-height: 1.35;
-  text-transform: none;
-}
-
-.policy-check input {
-  width: 18px;
-  height: 18px;
-  margin: 1px 0 0;
-  accent-color: var(--orange);
-}
-
 .hidden-field {
   position: absolute;
   width: 1px;
