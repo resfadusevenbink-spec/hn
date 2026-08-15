@@ -69,6 +69,17 @@ function isLocalPreview() {
   return ["localhost", "127.0.0.1", "0.0.0.0"].includes(window.location.hostname);
 }
 
+function ModelArtwork({ className = "" }: { className?: string }) {
+  return (
+    <span className={`model-art ${className}`.trim()} aria-hidden="true">
+      <i />
+      <i />
+      <i />
+      <i />
+    </span>
+  );
+}
+
 export function HennaNetlifyApp() {
   const todayKey = toDateKey(new Date());
   const [hasEntered, setHasEntered] = useState(false);
@@ -278,12 +289,7 @@ export function HennaNetlifyApp() {
                   style={{ "--delay": `${index * 70}ms` } as React.CSSProperties}
                 >
                   <span className="model-index">{String(index + 1).padStart(2, "0")}</span>
-                  <span className="model-art" aria-hidden="true">
-                    <i />
-                    <i />
-                    <i />
-                    <i />
-                  </span>
+                  <ModelArtwork />
                   <span className="model-copy">
                     <strong>{model.name}</strong>
                     <em>{model.tag}</em>
@@ -305,9 +311,17 @@ export function HennaNetlifyApp() {
             <button className="back-button" type="button" onClick={returnToModels}>
               ← changer de modèle
             </button>
-            <div className="section-heading">
-              <p className="kicker">calendrier du modèle</p>
-              <h2 id="reservation-title">{selectedModel.name}</h2>
+            <div className={`selected-model-showcase model-card--${selectedModel.palette}`}>
+              <ModelArtwork className="selected-model-art" />
+              <div className="selected-model-copy">
+                <p className="kicker">modèle choisi</p>
+                <strong>{selectedModel.name}</strong>
+                <span>{selectedModel.tag}</span>
+              </div>
+            </div>
+            <div className="section-heading reservation-heading">
+              <p className="kicker">réservation</p>
+              <h2 id="reservation-title">Calendrier</h2>
             </div>
             <p className="calendar-page-note">
               Choisis le jour, l&apos;heure, puis complète les détails de ta demande.
@@ -362,7 +376,10 @@ export function HennaNetlifyApp() {
 
           <aside className="booking-panel">
             <div className="booking-poster">
-              <span>{selectedModel.name}</span>
+              <div className={`poster-model-preview model-card--${selectedModel.palette}`}>
+                <ModelArtwork className="poster-model-art" />
+                <span>{selectedModel.name}</span>
+              </div>
               <strong>{dateLabel(selectedDate)}</strong>
               <em>{selectedModel.duration}</em>
             </div>
